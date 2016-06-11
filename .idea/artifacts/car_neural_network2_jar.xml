@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="car-neural-network2:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/car_neural_network2_jar</output-path>
+    <root id="archive" name="car-neural-network.jar">
+      <element id="module-output" name="car-neural-network" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/android/android/x.x/android-x.x.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/neuroph/neuroph-imgrec/2.9/neuroph-imgrec-2.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-nop/1.7.6/slf4j-nop-1.7.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/neuroph/neuroph-contrib/2.9/neuroph-contrib-2.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/neuroph/neuroph-core/2.9/neuroph-core-2.9.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
