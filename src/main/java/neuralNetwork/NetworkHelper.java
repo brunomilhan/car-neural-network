@@ -3,62 +3,47 @@ package neuralNetwork;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.imgrec.ImageRecognitionPlugin;
 
-import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Collection;
+import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by bruno on 10/06/16.
  */
 public class NetworkHelper {
-    private static String NETWORK = "/home/bruno/pdi/PDI/PDI/projeto_final/rede/placa_network.nnet";
-    private static String IMGS_PATH = "/home/bruno/pdi/PDI/PDI/projeto_final/imagens/processada/letras/";
-    InputStream netInputStream;
-    NeuralNetwork neuralNetwork;
-    ImageRecognitionPlugin imgRecPlugin;
+    private ImageRecognitionPlugin imgRecPlugin;
     private String bestKey = "";
     private String placa = "";
     private int placaChar = 0;
 
+    private String imagesPath;
+    // implementar
+
+
     public NetworkHelper() {
+        imagesPath = getImagesPath();
+
         try {
-            InputStream netInputStream = new FileInputStream(NETWORK);
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader == null) {
+                classLoader = Class.class.getClassLoader();
+            }
+            InputStream netInputStream = classLoader.getResourceAsStream("placa_network.nnet");;
             NeuralNetwork neuralNetwork = NeuralNetwork.load(netInputStream);
             imgRecPlugin = (ImageRecognitionPlugin) neuralNetwork.getPlugin(ImageRecognitionPlugin.class);
-            System.out.println("Carregou rede");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void recognition(String fileName) {
-        File file = new File(IMGS_PATH + fileName);
-        BufferedImage img1 = null;
-        HashMap<String, Double> output = null;
-        try {
-            img1 = ImageIO.read(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            output = imgRecPlugin.recognizeImage(img1);
-
-            System.out.println(output.toString());
+            System.out.println("Carregou rede!!!");
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        sort(output);
     }
 
     public void recognition() {
         File file;
         for (int i = 0; i<8; i ++){
             try {
-                file = new File(IMGS_PATH + i + "_letra.bmp");
+                file = new File(imagesPath + i + "_letra.bmp");
                 BufferedImage img1 = null;
                 HashMap<String, Double> output = null;
                 try {
@@ -89,7 +74,6 @@ public class NetworkHelper {
         for (int i = 97; i < 123; i++) {
             char word = (char) i;
             hashmap.containsKey(word);
-            //lista.add(String.valueOf(a));
             double value = 0;
             int aux;
             if (hashmap.containsKey(String.valueOf(word)))
@@ -109,7 +93,6 @@ public class NetworkHelper {
         }
         // numbers
         for (int i = 0; i < 10; i++) {
-            char word = (char) i;
             double value = 0;
             int aux;
             if (hashmap.containsKey(String.valueOf(i)))
@@ -130,7 +113,6 @@ public class NetworkHelper {
             System.out.println("value sorted: " + bestValue + " key>: " + bestKey);
             this.bestKey = bestKey;
             mountPlaca(bestKey);
-
         }
     }
 
@@ -144,7 +126,39 @@ public class NetworkHelper {
     }
 
     public String getPlaca(){
+        System.out.println("=======================================");
         System.out.println("Possiveis caracteres placa carro: "+ this.placa);
         return this.placa;
+    }
+
+    public String getImagesPath(){
+        String path = NetworkHelper.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = "";
+        String[] pathOrigin;
+        String imagesPath  = "";
+        try {
+            decodedPath = URLDecoder.decode(path, "UTF-8");
+            System.out.println("Path: "+ decodedPath);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("images path: " + decodedPath);
+        pathOrigin = decodedPath.split("/");
+        System.out.println("images path: " + pathOrigin[pathOrigin.length-2]);
+        if (pathOrigin[pathOrigin.length - 1].equals("classes")){
+            imagesPath = "/home/bruno/pdi/PDI/PDI/projeto_final/imagens/processada/letras/";
+        }
+        if (pathOrigin[pathOrigin.length - 2].equals("rede")) {
+            System.out.println("entrou if");
+            for (int i = 0; i < (pathOrigin.length - 2); i++){
+                imagesPath += "/";
+                imagesPath += pathOrigin[i];
+            }
+            imagesPath += "/imagens/processada/letras/";
+        }
+        System.out.println("images path: " + imagesPath);
+
+        return imagesPath;
+
     }
 }
